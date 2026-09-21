@@ -400,3 +400,7 @@ Users should download them directly from their original projects:
 * `abenzerps/Qwen-Image-2.1-GGUF`
 
 Check the license of each upstream project and model before redistribution or commercial use.
+
+### Images
+
+<img width="742" height="1324" alt="image" src="https://github.com/user-attachments/assets/c44525a6-c0cf-4335-9bff-bc3d14b8a476" />
