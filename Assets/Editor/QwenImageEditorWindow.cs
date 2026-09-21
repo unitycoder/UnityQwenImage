@@ -80,6 +80,7 @@ namespace UnityLibrary.QwenImage
         [SerializeField] private bool autoStartServer = true;
         [SerializeField] private bool showServerOutput = false;
         [SerializeField] private bool stopServerOnUnityExit = true;
+        [SerializeField] private bool showServerSetup = false;
 
         [SerializeField] private string outputFolder = "Assets/Generated";
         [SerializeField] private string prompt = "Make this look realistic. Preserve the composition and camera angle.";
@@ -229,34 +230,12 @@ namespace UnityLibrary.QwenImage
 
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 
-            EditorGUILayout.LabelField("Project Root", ProjectRoot);
-            serverExecutablePath = EditorGUILayout.TextField("Server", serverExecutablePath);
-            diffusionModelPath = EditorGUILayout.TextField("Diffusion Model", diffusionModelPath);
-            llmPath = EditorGUILayout.TextField("LLM", llmPath);
-            llmVisionPath = EditorGUILayout.TextField("LLM Vision", llmVisionPath);
-            vaePath = EditorGUILayout.TextField("VAE", vaePath);
-            extraServerArguments = EditorGUILayout.TextField("Extra Arguments", extraServerArguments);
-
-            serverPort = EditorGUILayout.IntField("Port", serverPort);
-            diffusionFlashAttention = EditorGUILayout.Toggle("Diffusion Flash Attention", diffusionFlashAttention);
-            offloadToCpu = EditorGUILayout.Toggle("Offload To CPU", offloadToCpu);
-            autoStartServer = EditorGUILayout.Toggle("Auto Start Server", autoStartServer);
-            showServerOutput = EditorGUILayout.Toggle("Log Server Output", showServerOutput);
-            stopServerOnUnityExit = EditorGUILayout.Toggle("Stop Server On Unity Exit", stopServerOnUnityExit);
-
-            EditorGUILayout.Space(4);
-
             string processState = IsOwnedServerRunning() ? "Running" : "Not running";
             string apiState = serverReachable ? "Reachable" : "Offline / not checked";
 
             EditorGUILayout.LabelField("Process", processState);
             EditorGUILayout.LabelField("API", apiState);
             EditorGUILayout.LabelField("URL", ServerBaseUrl);
-
-            if (!File.Exists(ResolveProjectPath(llmVisionPath)))
-            {
-                EditorGUILayout.HelpBox("LLM Vision file was not found. Text-to-image can still work, but Qwen image editing with the GGUF LLM needs the matching mmproj file.", MessageType.Warning);
-            }
 
             EditorGUILayout.BeginHorizontal();
 
@@ -285,29 +264,61 @@ namespace UnityLibrary.QwenImage
 
             EditorGUILayout.EndHorizontal();
 
-            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.Space(4);
 
-            if (GUILayout.Button("Open Tools Folder"))
+            showServerSetup = EditorGUILayout.Foldout(showServerSetup, "Server Setup", true);
+
+            if (showServerSetup)
             {
-                string path = ResolveProjectPath("Tools");
+                EditorGUI.indentLevel++;
 
-                if (Directory.Exists(path))
+                EditorGUILayout.LabelField("Project Root", ProjectRoot);
+
+                serverExecutablePath = EditorGUILayout.TextField("Server", serverExecutablePath);
+                diffusionModelPath = EditorGUILayout.TextField("Diffusion Model", diffusionModelPath);
+                llmPath = EditorGUILayout.TextField("LLM", llmPath);
+                llmVisionPath = EditorGUILayout.TextField("LLM Vision", llmVisionPath);
+                vaePath = EditorGUILayout.TextField("VAE", vaePath);
+                extraServerArguments = EditorGUILayout.TextField("Extra Arguments", extraServerArguments);
+
+                serverPort = EditorGUILayout.IntField("Port", serverPort);
+                diffusionFlashAttention = EditorGUILayout.Toggle("Diffusion Flash Attention", diffusionFlashAttention);
+                offloadToCpu = EditorGUILayout.Toggle("Offload To CPU", offloadToCpu);
+                autoStartServer = EditorGUILayout.Toggle("Auto Start Server", autoStartServer);
+                showServerOutput = EditorGUILayout.Toggle("Log Server Output", showServerOutput);
+                stopServerOnUnityExit = EditorGUILayout.Toggle("Stop Server On Unity Exit", stopServerOnUnityExit);
+
+                if (!File.Exists(ResolveProjectPath(llmVisionPath)))
                 {
-                    EditorUtility.RevealInFinder(path);
+                    EditorGUILayout.HelpBox("LLM Vision file was not found. Text-to-image can still work, but image editing requires the matching mmproj file.", MessageType.Warning);
                 }
-            }
 
-            if (GUILayout.Button("Open Models Folder"))
-            {
-                string path = ResolveProjectPath("Tools/models");
+                EditorGUILayout.BeginHorizontal();
 
-                if (Directory.Exists(path))
+                if (GUILayout.Button("Open Tools Folder"))
                 {
-                    EditorUtility.RevealInFinder(path);
-                }
-            }
+                    string path = ResolveProjectPath("Tools");
 
-            EditorGUILayout.EndHorizontal();
+                    if (Directory.Exists(path))
+                    {
+                        EditorUtility.RevealInFinder(path);
+                    }
+                }
+
+                if (GUILayout.Button("Open Models Folder"))
+                {
+                    string path = ResolveProjectPath("Tools/models");
+
+                    if (Directory.Exists(path))
+                    {
+                        EditorUtility.RevealInFinder(path);
+                    }
+                }
+
+                EditorGUILayout.EndHorizontal();
+
+                EditorGUI.indentLevel--;
+            }
 
             EditorGUILayout.EndVertical();
         }
@@ -331,9 +342,14 @@ namespace UnityLibrary.QwenImage
             }
 
             EditorGUILayout.LabelField("Prompt");
-            prompt = EditorGUILayout.TextArea(prompt, GUILayout.MinHeight(80));
 
-            negativePrompt = EditorGUILayout.TextField("Negative Prompt", negativePrompt);
+            GUIStyle promptStyle = new GUIStyle(EditorStyles.textArea);
+            promptStyle.wordWrap = true;
+
+            prompt = EditorGUILayout.TextArea(prompt, promptStyle, GUILayout.MinHeight(80), GUILayout.ExpandWidth(true));
+
+            EditorGUILayout.LabelField("Negative Prompt");
+            negativePrompt = EditorGUILayout.TextArea(negativePrompt, promptStyle, GUILayout.MinHeight(40), GUILayout.ExpandWidth(true));
 
             width = Mathf.Max(64, EditorGUILayout.IntField("Width", width));
             height = Mathf.Max(64, EditorGUILayout.IntField("Height", height));
@@ -355,7 +371,17 @@ namespace UnityLibrary.QwenImage
 
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 
-            sourceMode = (SourceMode)EditorGUILayout.EnumPopup("Source Mode", sourceMode);
+            SourceMode newSourceMode = (SourceMode)EditorGUILayout.EnumPopup("Source Mode", sourceMode);
+
+            if (newSourceMode != sourceMode)
+            {
+                sourceMode = newSourceMode;
+
+                if (sourceMode == SourceMode.None)
+                {
+                    sourceImage = null;
+                }
+            }
 
             if (sourceMode == SourceMode.Texture)
             {
