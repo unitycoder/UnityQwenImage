@@ -104,3 +104,7 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+.vsconfig
+Assets/Generated/
+Tools/stable-diffusion.cpp/
+Tools/models/
