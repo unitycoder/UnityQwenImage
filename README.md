@@ -4,14 +4,14 @@ Unity Editor tool for generating and editing images locally with Qwen-Image-2.1 
 
 The tool can:
 
-* Generate images from text prompts
-* Edit an existing `Texture2D`
-* Use the current Scene View as the source image
-* Use the Game View or a Camera as the source image
-* Apply an optional black and white edit mask
-* Save generated images into the Unity project
-* Assign the result directly to a Material, Renderer, RawImage, Image, or SpriteRenderer
-* Start and stop the local Qwen server directly from Unity
+- Generate images from text prompts
+- Edit an existing `Texture2D`
+- Use the current Scene View as the source image
+- Use the Game View or a Camera as the source image
+- Apply an optional black and white edit mask
+- Save generated images into the Unity project
+- Assign the result directly to a Material, Renderer, RawImage, Image, or SpriteRenderer
+- Start and stop the local Qwen server directly from Unity
 
 All inference runs locally on your PC. After the required files have been downloaded, image generation does not require an internet connection.
 
@@ -19,11 +19,11 @@ All inference runs locally on your PC. After the required files have been downlo
 
 Current setup is intended for:
 
-* Windows 64-bit
-* NVIDIA GPU
-* Recent Unity version
-* `stable-diffusion.cpp` CUDA 12 build
-* Qwen-Image-2.1 model files
+- Windows 64-bit
+- NVIDIA GPU
+- Recent Unity version
+- `stable-diffusion.cpp` CUDA 12 build
+- Qwen-Image-2.1 model files
 
 A GPU with plenty of VRAM is recommended. The included default paths use the smaller Q4_0 diffusion model.
 
@@ -47,9 +47,11 @@ Tools -> UnityLibrary -> Qwen Image
 
 ## 2. Download stable-diffusion.cpp
 
-Go to the `leejet/stable-diffusion.cpp` GitHub Releases page.
+Download the latest Windows CUDA 12 x64 release from:
 
-From the Windows release assets, download:
+https://github.com/leejet/stable-diffusion.cpp/releases
+
+From the release assets, download:
 
 ```text
 sd-master-<build>-bin-win-cuda12-x64.zip
@@ -99,7 +101,9 @@ Recommended starting file:
 qwen-image-2.1-Q4_0.gguf
 ```
 
-Download it from the `abenzerps/Qwen-Image-2.1-GGUF` repository on Hugging Face.
+Download from:
+
+https://huggingface.co/abenzerps/Qwen-Image-2.1-GGUF
 
 Other quantizations such as Q4_K_M, Q6_K, or Q8_0 can also be used if you have enough VRAM.
 
@@ -111,7 +115,9 @@ Download:
 Qwen3VL-8B-Instruct-Q4_K_M.gguf
 ```
 
-from the official `Qwen/Qwen3-VL-8B-Instruct-GGUF` Hugging Face repository.
+From:
+
+https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct-GGUF
 
 ### Qwen3-VL vision projector
 
@@ -121,7 +127,9 @@ Download:
 mmproj-Qwen3VL-8B-Instruct-F16.gguf
 ```
 
-from the same Qwen3-VL repository.
+From the same repository:
+
+https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct-GGUF
 
 This file is required for image-input/editing workflows with the GGUF Qwen3-VL encoder.
 
@@ -133,7 +141,9 @@ Download:
 qwen_image_2.1_vae_bf16.safetensors
 ```
 
-It is available from the `abenzerps/Qwen-Image-2.1-GGUF` repository under its VAE files.
+For example from:
+
+https://huggingface.co/abenzerps/Qwen-Image-2.1-GGUF/tree/main/vae
 
 ## 4. Final folder structure
 
@@ -195,6 +205,8 @@ The local server runs on:
 ```text
 http://127.0.0.1:1234
 ```
+
+It is bound to the local machine only.
 
 ## 6. Generate an image from text
 
@@ -286,8 +298,8 @@ and assign a black and white mask texture.
 
 By default:
 
-* White = area to edit
-* Black = area to protect
+- White = area to edit
+- Black = area to protect
 
 Use `Invert Mask` if you need the opposite behavior.
 
@@ -295,11 +307,11 @@ Use `Invert Mask` if you need the opposite behavior.
 
 The generated image can be assigned directly to:
 
-* Material
-* Renderer
-* RawImage
-* Image
-* SpriteRenderer
+- Material
+- Renderer
+- RawImage
+- Image
+- SpriteRenderer
 
 Select a compatible object and click:
 
@@ -365,16 +377,16 @@ Do not use the Qwen3-VL LLM file as the diffusion model.
 
 ### Vision projector or image editing error
 
-Make sure the LLM and `mmproj` files are from the same `Qwen3-VL-8B-Instruct-GGUF` repository.
+Make sure the LLM and `mmproj` files are from the same Qwen3-VL-8B-Instruct-GGUF repository.
 
 ### Out of VRAM
 
 Try:
 
-* Q4_0 or Q4_K_M diffusion model
-* Lower image resolution
-* Keep `Offload To CPU` enabled
-* Close other GPU-heavy applications
+- Q4_0 or Q4_K_M diffusion model
+- Lower image resolution
+- Keep `Offload To CPU` enabled
+- Close other GPU-heavy applications
 
 ### Port 1234 is already in use
 
@@ -394,10 +406,10 @@ This repository does not need to include the large model weights or `stable-diff
 
 Users should download them directly from their original projects:
 
-* `leejet/stable-diffusion.cpp`
-* `Qwen/Qwen-Image-2.1`
-* `Qwen/Qwen3-VL-8B-Instruct-GGUF`
-* `abenzerps/Qwen-Image-2.1-GGUF`
+- `leejet/stable-diffusion.cpp`
+- `Qwen/Qwen-Image-2.1`
+- `Qwen/Qwen3-VL-8B-Instruct-GGUF`
+- `abenzerps/Qwen-Image-2.1-GGUF`
 
 Check the license of each upstream project and model before redistribution or commercial use.
 
